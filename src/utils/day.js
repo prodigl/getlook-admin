@@ -1,14 +1,26 @@
-const date = new Date();
+//today date
+const todayDate = new Date();
 
-const today = `${date.getFullYear()}-0${date.getMonth() + 1}-${date.getDate()}`;
+//yesterday date
+const yesterdayDate = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
 
-const yesterday = `${date.getFullYear()}-0${date.getMonth() + 1}-${
-  date.getDate() - 1
-}`;
+//tomorrow date
+const tommorrowDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
 
-const tommorrow = `${date.getFullYear()}-0${date.getMonth() + 1}-${
-  date.getDate() + 2
-}`;
+//today date format acc. to API
+const today = `${todayDate.getFullYear()}-0${
+  todayDate.getMonth() + 1
+}-${todayDate.getDate()}`;
+
+//yesterday date format acc. to API
+const yesterday = `${yesterdayDate.getFullYear()}-0${
+  yesterdayDate.getMonth() + 1
+}-${yesterdayDate.getDate()}`;
+
+//tomorrow date format acc. to API
+const tommorrow = `${tommorrowDate.getFullYear()}-0${
+  tommorrowDate.getMonth() + 1
+}-${tommorrowDate.getDate()}`;
 
 export const days = [
   {
