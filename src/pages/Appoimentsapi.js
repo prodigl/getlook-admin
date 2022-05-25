@@ -35,33 +35,73 @@ const Appoimentsapi = () => {
     fetchData();
   }, []);
 
-  const renderData = async (app) => {
-    const localAppointments = await usingMap(app);
+  const renderData = (app) => {
+    const localAppointments = usingMap(app);
     let newAppointments = [];
 
     if (localAppointments && localAppointments?.length) {
       localAppointments?.map((item) => {
         Object.keys(item)?.map((key) => {
-          // if condition then return table
-          console.log('key',key);
-
+          // console.log(key);
           newAppointments.push(item[key]);
         });
       });
     }
-    console.log(newAppointments);
+    console.log("appointments", newAppointments);
     return newAppointments;
   };
 
   const memorizeData = useMemo(() => {
     const localData = renderData(appointments);
-    // console.log(localData);
-    return loader ? "loading...." : "check result";
+    console.log("localdata", localData);
+    return loader
+      ? "loading...."
+      : Object.keys(localData).map((key) => {
+          // console.log("dataitem", localData[key][1]);
+          return (
+            <tr key={key}>
+              {localData[key].map((dataItem, index) => {
+                console.log("dataitem", dataItem);
+
+                return (
+                  <>
+                    <td>{dataItem.stylist.user.first_name}</td>
+                    <td>
+                      {dataItem.stylist.area.name}, {dataItem.stylist.area.city}
+                    </td>
+                    <td>{dataItem.date}</td>
+                    <td>{dataItem.slot && dataItem.slot}</td>
+                    <td>{dataItem.slot && dataItem.slot}</td>
+                    <td>{dataItem.slot && dataItem.slot}</td>
+                  </>
+                );
+              })}
+            </tr>
+          );
+        });
   }, [appointments]);
 
   return (
     <>
-      {loader ? "loading...." : memorizeData}
+      {loader ? (
+        "loading...."
+      ) : (
+        <div className="container-fluid mt-5">
+          <table className="table text-center">
+            <thead className="table-dark">
+              <tr>
+                <th scope="col">Stylist</th>
+                <th scope="col">Area</th>
+                <th scope="col">Date</th>
+                <th scope="col">Slot 1</th>
+                <th scope="col">Slot 2</th>
+                <th scope="col">Slot 3</th>
+              </tr>
+            </thead>
+            <tbody>{memorizeData}</tbody>
+          </table>
+        </div>
+      )}
       {/* {memorizeData} */}
     </>
   );
