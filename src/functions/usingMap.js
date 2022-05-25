@@ -43,9 +43,9 @@ export const usingMap = (appointments) => {
   // const array1 = Array.from(data._);
 
   //array of an object
-  const array = Array.from(data._, ([key, value]) => {
-    return { [key]: value };
-  });
-
-  return array;
+  if (data) {
+    return Array.from(data._, ([key, value]) => {
+      return { [key]: value };
+    });
+  }
 };
