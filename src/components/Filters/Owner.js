@@ -4,8 +4,8 @@ import { owner } from "../../utils/owner";
 const Owner = ({ value, onChange }) => {
   return (
     <>
-      <div className="owner">
-        <label htmlFor="owners">Choose a owner:</label>
+      <div className="filter">
+        <label htmlFor="owners">Owner:</label>
         <br />
         <select value={value} onChange={onChange} name="owner" id="owners">
           <option value="">All</option>

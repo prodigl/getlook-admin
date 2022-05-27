@@ -18,7 +18,7 @@ const Appoimentsapi = () => {
           Accept: "application/json",
         },
         body: JSON.stringify({
-          date: "2022-05-25",
+          date: "2022-05-27",
           city: "Jodhpur",
         }),
       });

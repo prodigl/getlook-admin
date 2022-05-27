@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [loginDetails, setLoginDetails] = useState({});
@@ -17,10 +18,11 @@ const Login = () => {
     });
   };
 
+  //navigation hook
+  const navigate = useNavigate();
+
   const fetchLoginDetails = async (e) => {
     e.preventDefault();
-
-    // const { username, password } = loginData;
 
     try {
       const res = await fetch("http://3.6.36.102/adminuser/v1/api", {
@@ -41,6 +43,7 @@ const Login = () => {
         setLoginDetails(data);
 
         // redirect to admin dashboard page
+        navigate("/dashboard", { state: { data: data } });
         console.log(data.successMsg);
       } else if (data.errorCode === 1001) {
         console.log("only allowed for admin user");
