@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Filter from "../components/Filter";
@@ -11,6 +11,8 @@ import { filterContext } from "../context";
 import { usingMap } from "../functions/usingMap";
 import useFetch from "../hooks/useFetch";
 import { days } from "../utils/day";
+import { format } from 'date-fns'
+
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -23,7 +25,10 @@ const Dashboard = () => {
   }, []);
 
   const [loader, setLoader] = useState(true);
-
+  const [localDataa, setLocalData] = useState("");
+  const [name, setName] = useState([]);
+  const [area, setArea] = useState([]);
+  const [joinDate, setJoinDate] = useState([]);
   const [appointments, setAppointments] = useState([]);
 
   const [filter, setFilter] = useState({
@@ -104,7 +109,71 @@ const Dashboard = () => {
     fetchData();
   }, [filter]);
 
-  console.log(usingMap(appointments));
+  console.log('appointments', appointments);
+
+  const renderData = (app) => {
+    const localAppointments = usingMap(app);
+    let newAppointments = [];
+
+    if (localAppointments && localAppointments?.length) {
+      localAppointments?.map((item) => {
+        Object.keys(item)?.map((key) => {
+          newAppointments.push(item[key]);
+        });
+      });
+    }
+    console.log("appointments", newAppointments);
+    return newAppointments;
+  };
+
+  const memorizeData = useMemo(() => {
+    const localData = renderData(appointments);
+    setLocalData(localData);
+  }, [appointments]);
+
+  //Adding name 
+  useEffect(() => {
+    let vita = [];
+    Object.keys(localDataa).map((key) => {
+      const val = Object.values(localDataa[key]);
+      const tname = [
+        ...new Set(val.map((item) => item?.stylist?.user?.first_name)),
+      ];
+      vita.push(tname);
+    });
+    setName(vita);
+  }, [localDataa]);
+
+  //Adding Address 
+  useEffect(() => {
+    let address = [];
+    Object.keys(localDataa).map((key) => {
+      const val = Object.values(localDataa[key]);
+      const tname = [
+        ...new Set(val.map((item) => item?.stylist?.address)),
+      ];
+      address.push(tname);
+    });
+    setArea(address);
+    console.log(area)
+  }, [localDataa]);
+
+  //Adding Date 
+  useEffect(() => {
+    let date = [];
+    Object.keys(localDataa).map((key) => {
+      const val = Object.values(localDataa[key]);
+      const tname = [
+        ...new Set(val.map((item) => item?.stylist?.user?.date_joined)),
+      ];
+      date.push(tname);
+    });
+    setJoinDate(date);
+  }, [localDataa]);
+
+  // address
+  // date_joined
+  // console.log('using map',usingMap(appointments));
 
   return (
     <>
@@ -115,7 +184,7 @@ const Dashboard = () => {
       </filterContext.Provider>
 
       {/* //all filtered data */}
-      {appointments && appointments.length != 0 ? (
+      {localDataa && localDataa.length != 0 ? (
         <div className="container-fluid table-container">
           <table className="table">
             <thead className="table-head">
@@ -130,31 +199,44 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {!loader ? (
-                appointments.map((item, index) => {
+
+              {
+                Object.keys(localDataa).map((key, index) => {
+                  console.log('object', Object.keys(localDataa));
                   return (
-                    <tr key={index}>
+                    <tr>
                       <td>{index + 1}</td>
-                      <td>{item.stylist.user.first_name}</td>
+                      <td>{name[key]}</td>
+                      <td>{area[key]}</td>
                       <td>
-                        {item.stylist.area.name}, {item.stylist.area.city}
+                        {
+                          format(new Date(joinDate[key]), 'dd.MM.yyyy')
+                        }
                       </td>
-                      <td>{item.date}</td>
-                      <td>
-                        <Button text={item.slot === 1 ? "release" : "block"} />
-                      </td>
-                      <td>
-                        <Button text={item.slot === 2 ? "release" : "block"} />
-                      </td>
-                      <td>
-                        <Button text={item.slot === 3 ? "release" : "block"} />
-                      </td>
+                      {localDataa[key].map((dataItem, index) => {
+                        console.log('localDataa[key]',localDataa[key])
+                        return (
+                          <>
+                            <td>
+                              {
+                                dataItem.slot === 1 ? dataItem.slot :
+                                  dataItem.slot === 2 ? dataItem.slot :
+                                    dataItem.slot === 3 ? dataItem.slot : "free"
+                              }
+                            </td>
+                            {/* <td>hello</td> */}
+
+
+                          </>
+                        );
+                      })}
+
                     </tr>
                   );
-                })
-              ) : (
-                <Loader />
-              )}
+                })}
+
+
+              {/* {memorizeData} */}
             </tbody>
           </table>
         </div>
